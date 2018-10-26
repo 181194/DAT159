@@ -33,9 +33,10 @@ public class UTXO {
 		return map;
 	}
 
-//	public Output getOutputFromInput(Input input) {
-//		Map<Input,Output> collect = map.entrySet().stream()
-//				.filter(map -> map.getValue().))
-//				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-//	}
+	public boolean validateSumInputAndOutput(Transaction tx) {
+		long sumInputs, sumOutputs;
+		sumInputs = tx.getInputs().stream().mapToLong(in -> map.get(in).getValue()).sum();
+		sumOutputs = tx.getOutputs().stream().mapToLong(in -> in.getValue()).sum();
+		return sumInputs == sumOutputs;
+	}
 }

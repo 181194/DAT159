@@ -44,7 +44,7 @@ public class Application {
 		try {
             CoinbaseTx coinbaseTx = new CoinbaseTx("Enda en Coinbase Tx?", 100, miner.getAddress());
 			Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
-			if(regularTx.isValid()) {
+            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx)) {
 				utxo.addAndRemoveOutputsFrom(regularTx);
                 utxo.addOutputFrom(coinbaseTx);
                 System.out.println("Block2");
@@ -61,7 +61,7 @@ public class Application {
         //      - All the inputs are unspent and belongs to the sender
         //      - There are no repeating inputs!!! - OK
         //      - All the outputs must have a value > 0 - OK
-        //      - The sum of inputs equals the sum of outputs
+        //      - The sum of inputs equals the sum of outputs - OK
         //      - The transaction is correctly signed by the sender - OK
         //      - The transaction hash is correct - OK
         
@@ -69,9 +69,9 @@ public class Application {
         //    unspent outputs (depending on the strategy for choosing inputs) with a
         //    total of 2.6 * block reward, and the other address should have 0.4 ...
         try {
-            CoinbaseTx coinbaseTx = new CoinbaseTx("Coinbase tranactions for everybody", 100, miner.getAddress());
+            CoinbaseTx coinbaseTx = new CoinbaseTx("Coinbase tx for everybody", 100, miner.getAddress());
             Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
-            if(regularTx.isValid()) {
+            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx)) {
                 utxo.addAndRemoveOutputsFrom(regularTx);
                 utxo.addOutputFrom(coinbaseTx);
                 System.out.println("Block3");
