@@ -12,7 +12,7 @@ public class CoinbaseTx {
 	public CoinbaseTx(String coinbase, int value, String address) {
 	    this.coinbase = coinbase;
 	    this.output = new Output(value, address);
-	    this.txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString()));
+	    this.txHash = HashUtil.base64Encode(HashUtil.sha256Hash(coinbase + output.toString()));
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class CoinbaseTx {
 		sb.append("Coinbase(" ).append(txHash).append(")\n" );
 		sb.append("    message=" );
 		sb.append(coinbase);
-		sb.append(", ");
+		sb.append(", output=Output ");
 		sb.append(output.toString());
 		return sb.toString();
 	}

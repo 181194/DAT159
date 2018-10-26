@@ -55,7 +55,13 @@ public class Wallet {
         Transaction transaction = new Transaction(getPublicKey());
 
         // 6. Add chosen inputs
-        UtxoToSend.forEach(input -> transaction.addInput(input));
+        UtxoToSend.forEach(input -> {
+            try {
+                transaction.addInput(input);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         // 7. Add 1 or 2 outputs, depending on change
         transaction.addOutput(new Output(value, address));
@@ -77,8 +83,7 @@ public class Wallet {
 
     @Override
     public String toString() {
-        //TODO
-        return null;
+        return new StringBuilder().append("Wallet  [id=").append(id).append(", address=").append(getAddress()).append(", balance=").append(getBalance()).append("]").toString();
     }
 
     public long getBalance() {
@@ -93,7 +98,7 @@ public class Wallet {
 
     private Map<Input, Output> collectMyUtxo() {
         Map<Input,Output> collect = utxoMap.entrySet().stream()
-                .filter(map -> map.getValue().getAddress().matches(getAddress()))
+                .filter(map -> map.getValue().getAddress().equals(getAddress()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return collect;
     }

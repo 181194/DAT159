@@ -27,8 +27,12 @@ public class Transaction {
 		this.senderPublicKey = senderPublicKey;
 	}
 	
-	public void addInput(Input input) {
-		inputs.add(input);
+	public void addInput(Input input) throws Exception {
+		if(!inputs.contains(input)) {
+			inputs.add(input);
+		} else {
+			throw new Exception("Input already exists in the list");
+		}
 	}
 	
 	public void addOutput(Output output) {
@@ -38,31 +42,30 @@ public class Transaction {
 	@Override
 	public String toString() {
 		StringBuilder returnString = new StringBuilder();
-		returnString.append("Transaction(" ).append(senderPublicKey).append(")\n  inputs= \n" );
+		returnString.append("Transaction(" ).append(txHash).append(")\n  inputs=" );
 		for(Input input : inputs) {
-			returnString.append("    ").append(input.toString());
+			returnString.append("\n    ").append(input.toString());
 		}
-		returnString.append("outputs= \n");
+		returnString.append("\n  outputs=");
 		for(Output output : outputs) {
-			returnString.append("    ").append(output.toString());
+			returnString.append("\n    ").append(output.toString());
 		}
 		return returnString.toString();
 	}
 
 	public void signTxUsing(PrivateKey privateKey) {
-	    signature = DSAUtil.signWithDSA(privateKey, this.toString());
+	    signature = DSAUtil.signWithDSA(privateKey, inputs.toString()+outputs.toString());
 	}
 
 	public void calculateTxHash() {
-	    txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString()));
+	    txHash = HashUtil.base64Encode(HashUtil.sha256Hash(inputs.toString()+outputs.toString()+signature.toString()));
 	}
 	
 	public boolean isValid() {
-//	    return (inputs.isEmpty() || outputs.isEmpty() || senderPublicKey == null || signature.length == 0 || txHash == null)
-//				&& inputs.size() == outputs.size()
-//				&& outputs.stream().allMatch(output -> output.getValue() < 21000000 && output.getValue() > 0)
-//				&& DSAUtil.verifyWithDSA(senderPublicKey, this.toString(), signature);
-		return true;
+	    return (!(inputs.isEmpty() || outputs.isEmpty() || senderPublicKey == null || signature.length == 0 || txHash == null))
+				&& outputs.stream().allMatch(output -> output.getValue() < 21000000 && output.getValue() > 0)
+				&& HashUtil.base64Encode(HashUtil.sha256Hash(inputs.toString()+outputs.toString()+signature.toString())).equals(txHash)
+				&& DSAUtil.verifyWithDSA(senderPublicKey, inputs.toString()+outputs.toString(), signature);
 	}
 
 	public List<Input> getInputs() {
@@ -75,5 +78,9 @@ public class Transaction {
 
 	public String getTxHash() {
 		return txHash;
+	}
+
+	public PublicKey getSenderPublicKey() {
+		return senderPublicKey;
 	}
 }

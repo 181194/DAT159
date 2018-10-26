@@ -2,6 +2,7 @@ package no.hvl.dat159;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UTXO {
     
@@ -15,12 +16,12 @@ public class UTXO {
 	@Override
 	public String toString() {
 	    StringBuilder sb = new StringBuilder();
-	    map.forEach((key, value) -> sb.append("\n Input:  ").append(key.toString()).append("\n Output: ").append(value.toString()));
+	    map.forEach((key, value) -> sb.append("\nInput:  ").append(key.toString()).append("\n         --> Output: ").append(value.toString()));
 	    return sb == null ? "UTXO is empty" : sb.toString();
 	}
 	
 	public void addOutputFrom(CoinbaseTx ctx) {
-	    map.put((new Input(null, 0)), ctx.getOutput());
+		map.put(new Input(ctx.getTxHash(), 0), ctx.getOutput());
 	}
 
     public void addAndRemoveOutputsFrom(Transaction tx) {
@@ -31,4 +32,10 @@ public class UTXO {
 	public Map<Input, Output> getMap() {
 		return map;
 	}
+
+//	public Output getOutputFromInput(Input input) {
+//		Map<Input,Output> collect = map.entrySet().stream()
+//				.filter(map -> map.getValue().))
+//				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//	}
 }

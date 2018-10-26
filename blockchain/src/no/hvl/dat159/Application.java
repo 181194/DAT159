@@ -1,5 +1,8 @@
 package no.hvl.dat159;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Application {
     
     private static UTXO utxo = new UTXO();
@@ -33,17 +36,19 @@ public class Application {
 		//Creates a coinbase transaction and adds an amount to the miner's wallet.
 		CoinbaseTx genesis = new CoinbaseTx("Kan jeg skrive masse tull her?", 100, miner.getAddress());
 		utxo.addOutputFrom(genesis);
-		System.out.println("Genesis: "+genesis);
-		System.out.println("UTXO: "+utxo.toString());
+		System.out.println("Block1:\n "+genesis+"\n");
         
         // 2. The second "block" contains two transactions, the mandatory coinbase
         //    transaction and a regular transaction. The regular transaction shall
         //    send ~20% of the money from the "miner"'s address to the other address.
-		CoinbaseTx coinbaseTx = new CoinbaseTx("Enda en Coinbase Tx?", 100, miner.getAddress());
 		try {
+            CoinbaseTx coinbaseTx = new CoinbaseTx("Enda en Coinbase Tx?", 100, miner.getAddress());
 			Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
 			if(regularTx.isValid()) {
 				utxo.addAndRemoveOutputsFrom(regularTx);
+                utxo.addOutputFrom(coinbaseTx);
+                System.out.println("Block2");
+                System.out.println(coinbaseTx.toString()+"\n"+regularTx.toString()+"\n");
 			} else {
 				throw new Exception("Transaction is NOT valid!!");
 			}
@@ -51,42 +56,40 @@ public class Application {
 			e.printStackTrace();
 		}
 
-		utxo.addOutputFrom(coinbaseTx);
-
-		System.out.println("UTXO: "+utxo.toString());
         //    Validate the regular transaction created by the "miner"'s wallet:
-        //      - All the content must be valid (not null++)!!!
+        //      - All the content must be valid (not null++)!!! - OK
         //      - All the inputs are unspent and belongs to the sender
-        //      - There are no repeating inputs!!!
-        //      - All the outputs must have a value > 0
+        //      - There are no repeating inputs!!! - OK
+        //      - All the outputs must have a value > 0 - OK
         //      - The sum of inputs equals the sum of outputs
-        //      - The transaction is correctly signed by the sender
-        //      - The transaction hash is correct
-
-        
-        //    Update the UTXO-set (both add and remove).
+        //      - The transaction is correctly signed by the sender - OK
+        //      - The transaction hash is correct - OK
         
         // 3. Do the same once more. Now, the "miner"'s address should have two or more
         //    unspent outputs (depending on the strategy for choosing inputs) with a
         //    total of 2.6 * block reward, and the other address should have 0.4 ...
-        
+        try {
+            CoinbaseTx coinbaseTx = new CoinbaseTx("Coinbase tranactions for everybody", 100, miner.getAddress());
+            Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
+            if(regularTx.isValid()) {
+                utxo.addAndRemoveOutputsFrom(regularTx);
+                utxo.addOutputFrom(coinbaseTx);
+                System.out.println("Block3");
+                System.out.println(coinbaseTx.toString()+"\n"+regularTx.toString()+"\n");
+            } else {
+                throw new Exception("Transaction is NOT valid!!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         //    Validate the regular transaction ...
-        
+
         //    Update the UTXO-set ...
-	    
-        // 4. Make a nice print-out of all that has happened, as well as the end status.
-        //
-        //      for each of the "block"s (rounds), print
-        //          "block" number
-        //          the coinbase transaction
-        //              hash, message
-        //              output
-        //          the regular transaction(s), if any
-        //              hash
-        //              inputs
-        //              outputs
-        //      End status: the set of unspent outputs
-        //      End status: for each of the wallets, print
-        //          wallet id, address, balance
+        System.out.println("UTXO: "+utxo.toString()+"\n");
+
+        System.out.println("Miner's wallet:\n"+miner.toString()+"\n");
+        System.out.println("My wallet\n"+wallet.toString());
 	}
 }
