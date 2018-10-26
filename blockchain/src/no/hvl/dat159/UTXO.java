@@ -17,7 +17,7 @@ public class UTXO {
 	public String toString() {
 	    StringBuilder sb = new StringBuilder();
 	    map.forEach((key, value) -> sb.append("\nInput:  ").append(key.toString()).append("\n         --> Output: ").append(value.toString()));
-	    return sb == null ? "UTXO is empty" : sb.toString();
+	    return sb.toString();
 	}
 	
 	public void addOutputFrom(CoinbaseTx ctx) {
@@ -38,5 +38,9 @@ public class UTXO {
 		sumInputs = tx.getInputs().stream().mapToLong(in -> map.get(in).getValue()).sum();
 		sumOutputs = tx.getOutputs().stream().mapToLong(in -> in.getValue()).sum();
 		return sumInputs == sumOutputs;
+	}
+
+	public boolean verifyUnspentTxOwner(Transaction tx) {
+		return tx.getInputs().stream().anyMatch(input -> map.get(input).getAddress().equals(HashUtil.addressFromPublicKey(tx.getSenderPublicKey())));
 	}
 }

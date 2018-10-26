@@ -44,7 +44,7 @@ public class Application {
 		try {
             CoinbaseTx coinbaseTx = new CoinbaseTx("Enda en Coinbase Tx?", 100, miner.getAddress());
 			Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
-            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx)) {
+            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx) && utxo.verifyUnspentTxOwner(regularTx)) {
 				utxo.addAndRemoveOutputsFrom(regularTx);
                 utxo.addOutputFrom(coinbaseTx);
                 System.out.println("Block2");
@@ -71,7 +71,7 @@ public class Application {
         try {
             CoinbaseTx coinbaseTx = new CoinbaseTx("Coinbase tx for everybody", 100, miner.getAddress());
             Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
-            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx)) {
+            if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx) && utxo.verifyUnspentTxOwner(regularTx)) {
                 utxo.addAndRemoveOutputsFrom(regularTx);
                 utxo.addOutputFrom(coinbaseTx);
                 System.out.println("Block3");
