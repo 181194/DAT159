@@ -15,8 +15,7 @@ public class Input {
 
 	@Override
 	public String toString() {
-        //TODO For screen output
-	    return "";
+        return new StringBuilder().append("[prevTxHash=").append(prevTxHash).append(", prevOutputIndex=").append(prevOutputIndex).append("]").toString();
 	}
 
     public String getPrevTxHash() {

@@ -21,11 +21,8 @@ public class CoinbaseTx {
 		sb.append("Coinbase(" ).append(txHash).append(")\n" );
 		sb.append("    message=" );
 		sb.append(coinbase);
-		sb.append(", output=Output  [value=" );
-		sb.append(output.getValue());
-		sb.append(", address=" );
-		sb.append(output.getAddress());
-		sb.append("]\n" );
+		sb.append(", ");
+		sb.append(output.toString());
 		return sb.toString();
 	}
 

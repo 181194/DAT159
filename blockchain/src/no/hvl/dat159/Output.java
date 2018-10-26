@@ -13,8 +13,7 @@ public class Output {
 
 	@Override
 	public String toString() {
-        //TODO For screen output
-        return "";
+        return new StringBuilder().append("[value=").append(value).append(", address=").append(address).append("]").toString();
 	}
 
 	public long getValue() {

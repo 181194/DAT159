@@ -31,14 +31,29 @@ public class Application {
         //    amount to the "miner"'s address. Update the UTXO-set (add only).
 
 		//Creates a coinbase transaction and adds an amount to the miner's wallet.
-		CoinbaseTx t1 = new CoinbaseTx("Kan jeg skrive masse tull her?", 100, miner.getAddress());
-		utxo.addOutputFrom(t1);
+		CoinbaseTx genesis = new CoinbaseTx("Kan jeg skrive masse tull her?", 100, miner.getAddress());
+		utxo.addOutputFrom(genesis);
+		System.out.println("Genesis: "+genesis);
+		System.out.println("UTXO: "+utxo.toString());
         
         // 2. The second "block" contains two transactions, the mandatory coinbase
         //    transaction and a regular transaction. The regular transaction shall
         //    send ~20% of the money from the "miner"'s address to the other address.
-		Transaction block2 = miner.createTransaction(20, wallet.getAddress());
-        
+		CoinbaseTx coinbaseTx = new CoinbaseTx("Enda en Coinbase Tx?", 100, miner.getAddress());
+		try {
+			Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
+			if(regularTx.isValid()) {
+				utxo.addAndRemoveOutputsFrom(regularTx);
+			} else {
+				throw new Exception("Transaction is NOT valid!!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		utxo.addOutputFrom(coinbaseTx);
+
+		System.out.println("UTXO: "+utxo.toString());
         //    Validate the regular transaction created by the "miner"'s wallet:
         //      - All the content must be valid (not null++)!!!
         //      - All the inputs are unspent and belongs to the sender
@@ -47,6 +62,7 @@ public class Application {
         //      - The sum of inputs equals the sum of outputs
         //      - The transaction is correctly signed by the sender
         //      - The transaction hash is correct
+
         
         //    Update the UTXO-set (both add and remove).
         

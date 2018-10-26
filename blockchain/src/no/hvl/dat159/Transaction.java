@@ -40,11 +40,11 @@ public class Transaction {
 		StringBuilder returnString = new StringBuilder();
 		returnString.append("Transaction(" ).append(senderPublicKey).append(")\n  inputs= \n" );
 		for(Input input : inputs) {
-			returnString.append("    Input  [prexTxHash=" ).append(input.getPrevTxHash()).append(", prevOutputIndex=" ).append(input.getPrevOutputIndex()).append("]\n" );
+			returnString.append("    ").append(input.toString());
 		}
 		returnString.append("outputs= \n");
 		for(Output output : outputs) {
-			returnString.append("    Input  [value=" ).append(output.getValue()).append(", address=" ).append(output.getAddress()).append("]\n" );
+			returnString.append("    ").append(output.toString());
 		}
 		return returnString.toString();
 	}
@@ -58,11 +58,22 @@ public class Transaction {
 	}
 	
 	public boolean isValid() {
-	    if(!(inputs.isEmpty() || outputs.isEmpty() || senderPublicKey == null || signature.length == 0 || txHash == null))
-	    	if()
-	    return true;
+//	    return (inputs.isEmpty() || outputs.isEmpty() || senderPublicKey == null || signature.length == 0 || txHash == null)
+//				&& inputs.size() == outputs.size()
+//				&& outputs.stream().allMatch(output -> output.getValue() < 21000000 && output.getValue() > 0)
+//				&& DSAUtil.verifyWithDSA(senderPublicKey, this.toString(), signature);
+		return true;
 	}
-	
-   //TODO Getters?
 
+	public List<Input> getInputs() {
+		return inputs;
+	}
+
+	public List<Output> getOutputs() {
+		return outputs;
+	}
+
+	public String getTxHash() {
+		return txHash;
+	}
 }

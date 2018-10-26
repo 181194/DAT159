@@ -3,6 +3,7 @@ package no.hvl.dat159;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Wallet {
 
@@ -14,7 +15,7 @@ public class Wallet {
 
     public Wallet(String id, UTXO utxo) {
         this.id = id;
-        this.utxoMap = (Map<Input, Output>) utxo;
+        this.utxoMap = (Map<Input, Output>) utxo.getMap();
         this.keyPair = DSAUtil.generateRandomDSAKeyPair();
     }
 
@@ -27,28 +28,47 @@ public class Wallet {
     }
 
     public Transaction createTransaction(long value, String address) throws Exception {
-
-        //TODO - This is a big one
         
         // 1. Collect all UTXO for this wallet and calculate balance
         Map<Input, Output> myUtxo = collectMyUtxo();
-        long balance = calculateBalance(myUtxo.values());
+        long balance = getBalance();
+
         // 2. Check if there are sufficient funds --- Exception?
         if(balance < value) {
             throw new Exception("Not enough funds");
         }
+
         // 3. Choose a number of UTXO to be spent --- Strategy?
         List<Input> UtxoToSend = new ArrayList<Input>();
+        Iterator iterator = myUtxo.entrySet().iterator();
+        long collected = 0;
+        while(collected < value && iterator.hasNext()) {
+            Map.Entry<Input, Output> pair = (Map.Entry<Input, Output>)iterator.next();
+            collected += pair.getValue().getValue();
+            UtxoToSend.add(pair.getKey());
+        }
 
         // 4. Calculate change
+        long change = collected - value;
+
         // 5. Create an "empty" transaction
-        Transaction transaction = new Transaction(DSAUtil.base64DecodePublicKey(address));
+        Transaction transaction = new Transaction(getPublicKey());
+
         // 6. Add chosen inputs
+        UtxoToSend.forEach(input -> transaction.addInput(input));
+
         // 7. Add 1 or 2 outputs, depending on change
+        transaction.addOutput(new Output(value, address));
+        if(change > 0) transaction.addOutput(new Output(change, this.getAddress()));
+
         // 8. Sign the transaction
+        transaction.signTxUsing(keyPair.getPrivate());
+
         // 9. Calculate the hash for the transaction
+        transaction.calculateTxHash();
+
         // 10. return
-        return null;
+        return transaction;
         
         // PS! We have not updated the UTXO yet. That is normally done
         // when appending the block to the blockchain, and not here!
@@ -62,20 +82,20 @@ public class Wallet {
     }
 
     public long getBalance() {
-        //TODO
-        return 0;
+        return calculateBalance(collectMyUtxo().values());
     }
     
     //TODO Getters?
     
     private long calculateBalance(Collection<Output> outputs) {
-        //TODO
-        return 0;
+        return outputs.stream().filter(x -> x.getValue() > 0).mapToLong(x -> x.getValue()).sum();
     }
 
     private Map<Input, Output> collectMyUtxo() {
-        //TODO
-        return null;
+        Map<Input,Output> collect = utxoMap.entrySet().stream()
+                .filter(map -> map.getValue().getAddress().matches(getAddress()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return collect;
     }
 
 }

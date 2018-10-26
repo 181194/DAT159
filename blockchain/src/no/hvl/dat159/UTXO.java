@@ -11,18 +11,24 @@ public class UTXO {
     //  Since the Inputs are references to UTXOs, we can use those
     //  as keys.
 	private Map<Input, Output> map = new HashMap<>();
-	
-	public void printUTXO() {
-	    //TODO
+
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    map.forEach((key, value) -> sb.append("\n Input:  ").append(key.toString()).append("\n Output: ").append(value.toString()));
+	    return sb == null ? "UTXO is empty" : sb.toString();
 	}
 	
 	public void addOutputFrom(CoinbaseTx ctx) {
-	    map.put(null, ctx.getOutput());
+	    map.put((new Input(null, 0)), ctx.getOutput());
 	}
 
     public void addAndRemoveOutputsFrom(Transaction tx) {
-        //TODO
+		tx.getOutputs().forEach(output -> map.put(new Input(tx.getTxHash(), tx.getOutputs().indexOf(output)), output));
+		tx.getInputs().forEach(input -> map.remove(input));
     }
 
-    //TODO Getters?
+	public Map<Input, Output> getMap() {
+		return map;
+	}
 }
