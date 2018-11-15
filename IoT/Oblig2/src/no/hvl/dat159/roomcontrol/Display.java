@@ -1,5 +1,7 @@
 package no.hvl.dat159.roomcontrol;
 
+import no.hvl.dat159.roomcontrol.MQTTSubscribe.MQTTSubDisplay;
+
 public class Display {
 
 	public void write(String message) {

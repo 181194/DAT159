@@ -1,5 +1,6 @@
-package no.hvl.dat159.roomcontrol;
+package no.hvl.dat159.roomcontrol.MQTTSubscribe;
 
+import no.hvl.dat159.roomcontrol.Heating;
 import org.eclipse.paho.client.mqttv3.*;
 
 public class MQTTSubHeat extends MQTTSub implements MqttCallback, Runnable {

@@ -1,5 +1,8 @@
 package no.hvl.dat159.roomcontrol;
 
+import no.hvl.dat159.roomcontrol.MQTTPublish.MQTTPubHeat;
+import no.hvl.dat159.roomcontrol.MQTTSubscribe.MQTTSubTemperature;
+
 public class HeatController {
 
 	public static void main(String[] args) {

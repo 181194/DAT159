@@ -1,11 +1,8 @@
-package no.hvl.dat159.roomcontrol;
+package no.hvl.dat159.roomcontrol.MQTTPublish;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import no.hvl.dat159.roomcontrol.TemperatureSensor;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MQTTPubTemperature extends MQTTPub implements Runnable {
 

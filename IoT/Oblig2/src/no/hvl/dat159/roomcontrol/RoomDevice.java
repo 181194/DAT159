@@ -1,6 +1,7 @@
 package no.hvl.dat159.roomcontrol;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
+import no.hvl.dat159.roomcontrol.MQTTPublish.MQTTPubTemperature;
+import no.hvl.dat159.roomcontrol.MQTTSubscribe.MQTTSubHeat;
 
 public class RoomDevice {
 

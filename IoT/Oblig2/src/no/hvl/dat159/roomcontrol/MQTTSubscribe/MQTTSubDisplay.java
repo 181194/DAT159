@@ -1,5 +1,6 @@
-package no.hvl.dat159.roomcontrol;
+package no.hvl.dat159.roomcontrol.MQTTSubscribe;
 
+import no.hvl.dat159.roomcontrol.Display;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
