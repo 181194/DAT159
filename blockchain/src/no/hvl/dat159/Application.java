@@ -58,7 +58,7 @@ public class Application {
 
         //    Validate the regular transaction created by the "miner"'s wallet:
         //      - All the content must be valid (not null++)!!! - OK
-        //      - All the inputs are unspent and belongs to the sender
+        //      - All the inputs are unspent and belongs to the sender - OK
         //      - There are no repeating inputs!!! - OK
         //      - All the outputs must have a value > 0 - OK
         //      - The sum of inputs equals the sum of outputs - OK
@@ -70,7 +70,7 @@ public class Application {
         //    total of 2.6 * block reward, and the other address should have 0.4 ...
         try {
             CoinbaseTx coinbaseTx = new CoinbaseTx("Coinbase tx for everybody", 100, miner.getAddress());
-            Transaction regularTx = miner.createTransaction(20, wallet.getAddress());
+            Transaction regularTx = miner.createTransaction(130, wallet.getAddress());
             if(regularTx.isValid() && utxo.validateSumInputAndOutput(regularTx) && utxo.verifyUnspentTxOwner(regularTx)) {
                 utxo.addAndRemoveOutputsFrom(regularTx);
                 utxo.addOutputFrom(coinbaseTx);
@@ -83,12 +83,10 @@ public class Application {
             e.printStackTrace();
         }
 
-
-        //    Validate the regular transaction ...
-
-        //    Update the UTXO-set ...
+        //Print out the UTXO
         System.out.println("UTXO: "+utxo.toString()+"\n");
 
+        //Print out the wallets
         System.out.println("Miner's wallet:\n"+miner.toString()+"\n");
         System.out.println("My wallet\n"+wallet.toString());
 	}

@@ -89,9 +89,7 @@ public class Wallet {
     public long getBalance() {
         return calculateBalance(collectMyUtxo().values());
     }
-    
-    //TODO Getters?
-    
+
     private long calculateBalance(Collection<Output> outputs) {
         return outputs.stream().filter(x -> x.getValue() > 0).mapToLong(x -> x.getValue()).sum();
     }
